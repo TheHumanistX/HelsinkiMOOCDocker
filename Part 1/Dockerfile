@@ -1,17 +1,12 @@
-# Start from the alpine image that is smaller but no fancy tools
-FROM alpine:3.13
+FROM ubuntu:18.04
 
-# Use /use/src/app as our workdri. The following instructions will be executed in this location.
-WORKDIR /usr/src/app
+WORKDIR /mydir
 
-# Copy the hello.sh file from this location to /usr/src/app creating /usr/src/app/hello.sh
-COPY hello.sh .
+RUN apt-get update && apt-get install -y curl python
+RUN curl -L https://github.com/ytdl-org/youtube-dl/releases/download/2021.12.17/youtube-dl -o /usr/local/bin/youtube-dl
+RUN chmod a+rx /usr/local/bin/youtube-dl
 
-# Alternatively, if we skipped chmod earlier, we can add execution permissions during the build.
-# RUN chmod +x hello.sh
+ENV LC_ALL=C.UTF-8
 
-# Execute a command with `/bin/sh -c` prefix.
-RUN touch additional.txt
-
-# When running docker run the command will be ./hello.sh
-CMD ./hello.sh
+ENTRYPOINT ["/usr/local/bin/youtube-dl"]
+CMD [""]
